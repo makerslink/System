@@ -1,0 +1,77 @@
+-*- org-mode
+
+* 2015-07-28 andreas
+em2 är NIC märkt med nr1 på maskinen.
+
+Valde SSH-server och Virtual Machine Host vid installationen av paket.
+
+apt-get update
+apt-get upgrade
+
+Installerat TOR för openssh server, så maskinen kan nås från internet via TOR
+apt-get install tor
+## modified the file /etc/tor/torrc
+	HiddenServiceDir /var/lib/tor/hidden_service/
+	HiddenServicePort 22 127.0.0.1:22
+service tor restart
+## The hostname is specified in /var/lib/tor/hidden_service/hostname
+	qc2mipqhdzeef7ft.onion
+
+Installerar emacs för att kunna editera denna fil i org-mode
+apt-get install emacs24-nox
+
+* 2015-08-04 andreas
+Kopplat in förgreningsdosa
+* 2015-08-11 andreas
+Testat installera en virtuell maskin
+https://help.ubuntu.com/lts/serverguide/libvirt.html
+http://www.thegeekstuff.com/2014/10/linux-kvm-create-guest-vm/
+https://help.ubuntu.com/community/KVM/Installation
+
+ISO:
+http://releases.ubuntu.com/14.04.3/ubuntu-14.04.3-server-amd64.iso
+https://serverop.de/crux/crux-3.1/iso/crux-3.1.iso
+
+apt-get install virtinst
+
+root@squat:/var/lib/libvirt# virt-install -n crux -r 512 \
+--disk path=/kvm/images/crux.img,bus=virtio,size=10 \
+-c /kvm/crux-3.1.iso --network network=default,model=virtio -v
+root# virsh -c qemu:///system reset crux
+Konsollen hänger sig.
+
+* 2015-08-19 andreas
+Skapat konto åt net4all med sudo
+
+installerat git
+
+testar VNC-anslutning
+virt-install -n crux -r 512 \
+--disk path=/kvm/images/crux.img,bus=virtio,size=10 \
+-c /kvm/crux-3.1.iso --network network=default,model=virtio -v \
+--graphics vnc,listen=192.168.1.106,password=foobar --noautoconsole -v
+
+testar ansluta med virt-manager fran en remote maskin
+virt-install -n crux -r 512 \
+--disk path=/kvm/images/crux.img,bus=virtio,size=10 \
+-c /kvm/crux-3.1.iso --network network=default,model=virtio -v \
+--noautoconsole -v
+konsollen i virt-manager hänger sig efter initramfs laddats
+* 2015-08-26 andreas
+virt-install --os-variant list 
+
+add vnc server manually
+vi /etc/libvirt/qemu/crux.xml
+<graphics type='vnc' port='-1' autoport='yes' keymap='en-us'/>
+before final </devices>
+virsh vncdisplay <vm-name>
+
+Använda kickstart för att snabbt få igång virtuella maskiner
+http://blog.gluster.org/2013/05/kvm-clusters-on-the-fly-virt-install-kickstart-with-static-ips-2/
+
+cfdisk /dev/vda
+* 2015-09-30 andreas
+skapade konto åt tec med sudo
+* 2015-10-02 andreas
+konfigurerat statisk IP-adress 192.168.1.253 som alias i dhclient.conf
+
