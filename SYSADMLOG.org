@@ -75,3 +75,5 @@ skapade konto åt tec med sudo
 * 2015-10-02 andreas
 konfigurerat statisk IP-adress 192.168.1.253 som alias i dhclient.conf
 
+* 2015-11-01 andreas
+Modifierat /etc/logrotate.conf att behålla fler loggfiler
